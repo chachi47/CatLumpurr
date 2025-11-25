@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CatLumpurr Countdown</title>
+
+  <!-- CHANGE FONT HERE - Replace with any Google Font you like -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Orbitron', sans-serif;
+      color: white;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Desktop Background - CHANGE THIS */
+    body::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: url('./img/background.png') center/cover no-repeat;
+      z-index: -2;
+    }
+
+    /* Mobile Background - CHANGE THIS (optional) */
+    @media (max-width: 768px) {
+      body::before {
+        background: url('./img/Mobile-BG.png') center/cover no-repeat;
+      }
+    }
+
+    .overlay {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(to bottom, rgba(0,191,165,0.15), rgba(0,100,80,0.5));
+      z-index: -1;
+    }
+
+    .container {
+      text-align: center;
+      z-index: 10;
+      padding: 20px;
+    }
+
+    .title {
+      font-size: 2.8rem;
+      margin-bottom: 30px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.5);
+      letter-spacing: 3px;
+    }
+
+    .countdown {
+      margin-bottom: 50px;
+    }
+
+    .days {
+      font-size: 12rem;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 10px;
+      text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+    }
+
+    .days-text {
+      font-size: 3.5rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+
+    .timer {
+      background: rgba(255,255,255,0.95);
+      color: #00b36b;
+      padding: 20px 50px;
+      border-radius: 50px;
+      display: inline-block;
+      font-size: 4.5rem;
+      font-weight: 900;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+      min-width: 420px;
+    }
+
+    .download-btn {
+      margin-top: 50px;
+      padding: 16px 40px;
+      font-size: 1.5rem;
+      font-family: 'Orbitron', sans-serif;
+      background: #000;
+      color: white;
+      border: none;
+      border-radius: 50px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+      transition: all 0.3s;
+    }
+
+    .download-btn:hover {
+      background: #111;
+      transform: translateY(-3px);
+    }
+
+    .note {
+      margin-top: 40px;
+      font-size: 1.1rem;
+      opacity: 0.9;
+      line-height: 1.6;
+    }
+
+    /* Responsive */
+    @media (max-width: 1024px) {
+      .days { font-size: 10rem; }
+      .days-text { font-size: 3rem; }
+      .timer { font-size: 4rem; min-width: 380px; padding: 18px 40px; }
+    }
+
+    @media (max-width: 768px) {
+      .title { font-size: 2.2rem; margin-bottom: 20px; }
+      .days { font-size: 8rem; }
+      .days-text { font-size: 2.5rem; }
+      .timer { font-size: 3.2rem; min-width: 300px; padding: 15px 30px; }
+      .download-btn { font-size: 1.3rem; padding: 14px 35px; }
+    }
+
+    @media (max-width: 480px) {
+      .days { font-size: 6rem; }
+      .days-text { font-size: 2rem; }
+      .timer { font-size: 2.5rem; min-width: 260px; padding: 12px 25px; }
+      .title { font-size: 1.8rem; }
+    }
+
+    /* Hidden elements */
+    #canvas, #template { display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+  <div class="container">
+    <h1 class="title">CatLumpurr</h1>
+
+    <div class="countdown">
+      <div class="days" id="days">155</div>
+      <div class="days-text">Days</div>
+      <div class="timer" id="timer">07 : 45 : 12</div>
+    </div>
+
+    <button class="download-btn" onclick="downloadDayCard()">
+      Download Day Card
+    </button>
+
+    <div class="note">
+      Made with ❤️ by thechaachi<br>
+      <small>Time displayed in UTC • Accurate to the second</small>
+    </div>
+  </div>
+
+  <!-- Hidden Canvas: 1200×675 for download -->
+  <canvas id="canvas" width="1200" height="675"></canvas>
+
+  <!-- Your Template Image (1200×675 or larger, with transparent center) -->
+  <img id="template" src="./img/Day-Card-Template.png" crossorigin="anonymous">
+
+  <script>
+    // Target: 31 Jan 2026, 10:00 AM GMT+8 = 02:00 UTC
+    const targetDate = new Date("2026-01-31T02:00:00Z");
+
+    function updateCountdown() {
+      const now = new Date();
+      const diff = targetDate - now;
+
+      if (diff <= 0) {
+        document.getElementById("days").textContent = "0";
+        document.getElementById("timer").textContent = "00 : 00 : 00";
+        return;
+      }
+
+      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+      document.getElementById("days").textContent = days;
+      document.getElementById("timer").textContent = 
+        `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+    }
+
+    function downloadDayCard() {
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const template = document.getElementById("template");
+      const daysLeft = document.getElementById("days").textContent.trim();
+
+      if (!template.complete || template.naturalWidth === 0) {
+        alert("Template is still loading. Please wait a moment and try again.");
+        return;
+      }
+
+      // Draw template
+      ctx.drawImage(template, 0, 0, 1200, 675);
+
+      // Big Number
+      ctx.font = "bold 225px 'Orbitron', Arial, sans-serif";
+      ctx.fillStyle = "#FFFFFF";        // text color
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.fillText(daysLeft, 600, 338);  // only fill, no stroke
+
+      // Subtitle – NO STROKE (or delete completely if you don't want it)
+      ctx.font = "58px 'Orbitron', sans-serif";
+      ctx.fillStyle = "#FFFFFF";
+      ctx.fillText("Days Left", 600, 480);
+
+      // Download
+      canvas.toBlob(function(blob) {
+        const link = document.createElement("a");
+        link.download = `CatLumpurr-${daysLeft}-Days-Left.png`;
+        link.href = URL.createObjectURL(blob);
+        link.click();
+      }, "image/png", 1.0);
+    }
+
+    // Update every second
+    setInterval(updateCountdown, 1000);
+    updateCountdown();
+  </script>
+</body>
+</html>

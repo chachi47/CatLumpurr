@@ -2,211 +2,175 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>CatLumpurr Countdown</title>
 
-  <!-- CHANGE FONT HERE - Replace with any Google Font you like -->
-  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+  <!-- CHANGE FONT HERE IF YOU WANT -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&display=swap" rel="stylesheet">
 
   <style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html, body { height:100%; font-family:'Orbitron',sans-serif; overflow:hidden; }
 
     body {
-      font-family: 'Orbitron', sans-serif;
-      color: white;
-      height: 100vh;
+      background: url('./background.png') center/cover no-repeat;
       display: flex;
       align-items: center;
       justify-content: center;
-      background: #000;
-      overflow: hidden;
       position: relative;
     }
 
-    /* Desktop Background - CHANGE THIS */
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: url('./background.png') center/cover no-repeat;
-      z-index: -2;
-    }
-
-    /* Mobile Background - CHANGE THIS (optional) */
+    /* Mobile background */
     @media (max-width: 768px) {
-      body::before {
-        background: url('./Mobile-BG.png') center/cover no-repeat;
-      }
+      body { background: url('./Mobile-BG.png') center/cover no-repeat; }
     }
 
     .overlay {
       position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
+      inset: 0;
       background: linear-gradient(to bottom, rgba(0,191,165,0.15), rgba(0,100,80,0.5));
-      z-index: -1;
     }
 
-    .container {
+    .main {
       text-align: center;
-      z-index: 10;
+      width: 90%;
+      max-width: 1100px;
       padding: 20px;
+      position: relative;
+      z-index: 2;
     }
 
     .title {
-      font-size: 2.8rem;
-      margin-bottom: 30px;
-      text-shadow: 0 0 20px rgba(255,255,255,0.5);
-      letter-spacing: 3px;
-    }
-
-    .countdown {
-      margin-bottom: 50px;
+      font-size: 3.2rem;
+      margin-bottom: 1rem;
+      letter-spacing: 4px;
+      text-shadow: 0 0 20px rgba(255,255,255,0.4);
     }
 
     .days {
-      font-size: 12rem;
+      font-size: 18rem;
       font-weight: 900;
       line-height: 1;
-      margin-bottom: 10px;
-      text-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      color: white;
+      margin: 0.5rem 0;
+      text-shadow: 
+        8px 8px 0 #000,
+        -4px -4px 0 #000,
+        0 0 30px rgba(0,0,0,0.7);
+      letter-spacing: -8px;
     }
 
-    .days-text {
-      font-size: 3.5rem;
-      font-weight: 700;
-      margin-bottom: 20px;
+    .days-label {
+      font-size: 4rem;
+      font-weight: 800;
+      margin-bottom: 3rem;
+      text-shadow: 0 4px 15px rgba(0,0,0,0.6);
     }
 
     .timer {
-      background: rgba(255,255,255,0.95);
+      background: rgba(255,255,255,0.97);
       color: #00b36b;
-      padding: 20px 50px;
-      border-radius: 50px;
-      display: inline-block;
-      font-size: 4.5rem;
+      font-size: 5.5rem;
       font-weight: 900;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.4);
-      min-width: 420px;
+      padding: 1.2rem 4rem;
+      border-radius: 60px;
+      display: inline-block;
+      min-width: 480px;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+      letter-spacing: 4px;
     }
 
     .download-btn {
-      margin-top: 50px;
-      padding: 16px 40px;
-      font-size: 1.5rem;
-      font-family: 'Orbitron', sans-serif;
+      margin-top: 4rem;
+      padding: 1.1rem 3.5rem;
+      font-size: 1.6rem;
+      font-weight: 800;
       background: #000;
       color: white;
       border: none;
       border-radius: 50px;
       cursor: pointer;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-      transition: all 0.3s;
-    }
-
-    .download-btn:hover {
-      background: #111;
-      transform: translateY(-3px);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
     }
 
     .note {
-      margin-top: 40px;
+      margin-top: 2rem;
       font-size: 1.1rem;
       opacity: 0.9;
-      line-height: 1.6;
     }
 
-    /* Responsive */
-    @media (max-width: 1024px) {
-      .days { font-size: 10rem; }
-      .days-text { font-size: 3rem; }
-      .timer { font-size: 4rem; min-width: 380px; padding: 18px 40px; }
+    /* RESPONSIVE — This is the important part */
+    @media (max-width: 1200px) {
+      .days { font-size: 15rem; }
+      .timer { font-size: 4.8rem; min-width: 420px; }
     }
-
+    @media (max-width: 992px) {
+      .days { font-size: 13rem; }
+      .timer { font-size: 4.2rem; min-width: 380px; }
+      .title { font-size: 2.8rem; }
+      .days-label { font-size: 3.5rem; }
+    }
     @media (max-width: 768px) {
-      .title { font-size: 2.2rem; margin-bottom: 20px; }
-      .days { font-size: 8rem; }
-      .days-text { font-size: 2.5rem; }
-      .timer { font-size: 3.2rem; min-width: 300px; padding: 15px 30px; }
-      .download-btn { font-size: 1.3rem; padding: 14px 35px; }
+      .days { font-size: 11rem; letter-spacing: -4px; }
+      .days-label { font-size: 3rem; margin-bottom: 2rem; }
+      .timer { font-size: 3.6rem; min-width: 320px; padding: 1rem 2.5rem; }
+      .title { font-size: 2.4rem; }
+      .download-btn { font-size: 1.4rem; padding: 1rem 3rem; margin-top: 3rem; }
     }
-
     @media (max-width: 480px) {
-      .days { font-size: 6rem; }
-      .days-text { font-size: 2rem; }
-      .timer { font-size: 2.5rem; min-width: 260px; padding: 12px 25px; }
-      .title { font-size: 1.8rem; }
+      .days { font-size: 9rem; }
+      .timer { font-size: 3rem; min-width: 280px; }
+      .title { font-size: 2rem; }
+      .days-label { font-size: 2.5rem; }
     }
 
-    /* Hidden elements */
-    #canvas, #template { display: none; }
+    canvas, #template { display:none; }
   </style>
 </head>
 <body>
 
   <div class="overlay"></div>
-  <div class="container">
+  <div class="main">
     <h1 class="title">CatLumpurr</h1>
+    <div class="days" id="days">65</div>
+    <div class="days-label">Days</div>
+    <div class="timer" id="timer">18 : 09 : 30</div>
 
-    <div class="countdown">
-      <div class="days" id="days">155</div>
-      <div class="days-text">Days</div>
-      <div class="timer" id="timer">07 : 45 : 12</div>
-    </div>
-
-    <button class="download-btn" onclick="downloadDayCard()">
-      Download Day Card
-    </button>
+    <button class="download-btn" onclick="downloadDayCard()">Download Day Card</button>
 
     <div class="note">
-      Made with ❤️ by thechaachi<br>
-      <small>Time displayed in UTC • Accurate to the second</small>
+      Countdown to 31 January 2026, 10:00 AM (GMT+8)<br>
+      <small>Time displayed in UTC • Live countdown</small>
     </div>
   </div>
 
-  <!-- Hidden Canvas: 1200×675 for download -->
   <canvas id="canvas" width="1200" height="675"></canvas>
-
-  <!-- Your Template Image (1200×675 or larger, with transparent center) -->
   <img id="template" src="./Day-Card-Template.png" crossorigin="anonymous">
 
   <script>
-    // Target: 31 Jan 2026, 10:00 AM GMT+8 = 02:00 UTC
-    const targetDate = new Date("2026-01-31T02:00:00Z");
+    const targetDate = new Date("2026-01-31T02:00:00Z"); // 10:00 AM GMT+8
 
     function updateCountdown() {
-      const now = new Date();
-      const diff = targetDate - now;
+      const diff = targetDate - Date.now();
+      if (diff <= 0) { document.getElementById("days").textContent = "0"; document.getElementById("timer").textContent = "00 : 00 : 00"; return; }
 
-      if (diff <= 0) {
-        document.getElementById("days").textContent = "0";
-        document.getElementById("timer").textContent = "00 : 00 : 00";
-        return;
-      }
-
-      const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-      const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+      const days = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+      const m = Math.floor((diff % (1000*60*60)) / (1000*60));
+      const s = Math.floor((diff % (1000*60)) / 1000);
 
       document.getElementById("days").textContent = days;
       document.getElementById("timer").textContent = 
-        `${hours.toString().padStart(2, '0')} : ${minutes.toString().padStart(2, '0')} : ${seconds.toString().padStart(2, '0')}`;
+        `${h.toString().padStart(2,'0')} : ${m.toString().padStart(2,'0')} : ${s.toString().padStart(2,'0')}`;
     }
 
     function downloadDayCard() {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
-      const template = document.getElementById("template");
-      const daysLeft = document.getElementById("days").textContent.trim();
+      const img = document.getElementById("template");
+      if (!img.complete) { alert("Template still loading…"); return; }
 
-      if (!template.complete || template.naturalWidth === 0) {
-        alert("Template is still loading. Please wait a moment and try again.");
-        return;
-      }
-
-      // Draw template
-      ctx.drawImage(template, 0, 0, 1200, 675);
-
+      ctx.drawImage(img, 0, 0, 1200, 675);
       // Big Number
       ctx.font = "bold 225px 'Orbitron', Arial, sans-serif";
       ctx.fillStyle = "#FFFFFF";        // text color
@@ -220,16 +184,9 @@
       ctx.fillStyle = "#FFFFFF";
       ctx.fillText("Days Left", 600, 480);
 
-      // Download
-      canvas.toBlob(function(blob) {
-        const link = document.createElement("a");
-        link.download = `CatLumpurr-${daysLeft}-Days-Left.png`;
-        link.href = URL.createObjectURL(blob);
-        link.click();
-      }, "image/png", 1.0);
+      canvas.toBlob(b => { const a = document.createElement("a"); a.download = `CatLumpurr-${days}-Days.png`; a.href = URL.createObjectURL(b); a.click(); });
     }
 
-    // Update every second
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>

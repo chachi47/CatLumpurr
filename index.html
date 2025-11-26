@@ -15,22 +15,10 @@
     body {
       background: url('./background.png') center/cover no-repeat;
       display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  height: 100vh;
-}
-
-/* NEW: Auto scale whole page so it always fits */
-.scale-wrapper {
-  transform-origin: top center;
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
 
     /* Mobile background */
     @media (max-width: 768px) {
@@ -140,8 +128,8 @@
   </style>
 </head>
 <body>
+
   <div class="overlay"></div>
-  <div class="scale-wrapper">
   <div class="main">
     <h1 class="title">CatLumpurr</h1>
     <div class="days" id="days">65</div>
@@ -176,18 +164,6 @@
         `${h.toString().padStart(2,'0')} : ${m.toString().padStart(2,'0')} : ${s.toString().padStart(2,'0')}`;
     }
 
-    function scaleContent() {
-  const baseHeight = 1080; // your design height
-  const scale = window.innerHeight / baseHeight;
-
-  document.querySelector(".scale-wrapper").style.transform =
-    `scale(${scale})`;
-}
-
-window.addEventListener("resize", scaleContent);
-scaleContent();
-
-    
     function downloadDayCard() {
       const canvas = document.getElementById("canvas");
       const ctx = canvas.getContext("2d");
@@ -214,6 +190,5 @@ scaleContent();
     setInterval(updateCountdown, 1000);
     updateCountdown();
   </script>
- </div>
 </body>
 </html>
